@@ -1,20 +1,28 @@
-let express = require('express')
-let app = express();
-const apiRouter = require('./api-router.js');
-let mongoose = require('mongoose')
-let bodyParser = require('body-parser')
+/**
+ * api-router.js
+ * Router for contacts-api application
+ * Project 3
+ * Name: SCC Student
+ * COMP2150 Web Services
+ */
 
-//set up mongoose and body-parser
-app.use(bodyParser.urlencoded({extended: true}));
+let router = require("express").Router();
+var controller = require("./controller.js");
 
-app.use(bodyParser.json());
+router.get("/", function (req, res) {
+	res.json({
+		status: "API is Working.",
+		message: "Welcome to the Contacts API."
+	});
+});
 
-//connect to mongoose
-mongoose.connect("mongodb://localhost/contacts2", {useNewUrlParser:true});
-var db = mongoose.connection;
+router.route("/contacts")
+	.get(controller.index)
+	.post(controller.new);
 
-if(!db) {
-    console.log("Error connecting to the DB.");
-} else {
-    console.log("DB connected successfully.");
-}
+router.route("/contacts/:contact_id")
+	.get(controller.view)
+	.put(controller.update)
+	.delete(controller.delete);
+
+module.exports = router;
